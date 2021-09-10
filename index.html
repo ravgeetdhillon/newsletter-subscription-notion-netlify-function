@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notion + Netlify Functions Newsletter</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container py-5">
+        <p>
+            Get daily tips related to Jamstack in your inbox.
+        </p>
+
+        <div id="form" class="row">
+            <div class="col-sm-8">
+                <input name="email" type="email" class="form-control" placeholder="Your email" autocomplete="off">
+                <div id="feedback-box" class="invalid-feedback">
+                    Please enter a valid email
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <button class="btn btn-primary w-100" type="button" onclick="registerUser()">Submit form</button>
+            </div>
+        </div>
+
+        <div id="success-box" class="alert alert-success d-none">
+            Thanks for subscribing to our newsletter.
+        </div>
+        <div id="error-box" class="alert alert-danger d-none">
+            There was some problem adding your email.
+        </div>
+    </div>
+</body>
+
+<script>
+    function validateEmail(email) {
+        const re =
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(email).toLowerCase());
+    }
+
+    async function registerUser() {
+        const form = document.getElementById('form');
+        const successBox = document.getElementById('success-box');
+        const errorBox = document.getElementById('error-box');
+        const feedbackBox = document.getElementById('feedback-box');
+        const email = document.getElementsByName('email')[0].value;
+
+        if (!validateEmail(email)) {
+            feedbackBox.classList.add('d-block');
+            return;
+        }
+
+        const headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        
+        const options = {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({email}),
+        };
+
+        const response = await fetch('/.netlify/functions/index', options);
+
+        if (response.ok) {
+            form.classList.add('d-none');
+            successBox.classList.remove('d-none');
+        }
+        else {
+            form.classList.add('d-none');
+            errorBox.classList.remove('d-none');
+        }
+    }
+</script>
+</html>
