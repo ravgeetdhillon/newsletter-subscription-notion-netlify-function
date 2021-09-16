@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@notionhq/client": "^0.3.1"
+    "@notionhq/client": "^0.3.1",
+    "mailgun-js": "^0.22.0"
   }
 }
